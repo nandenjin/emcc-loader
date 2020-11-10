@@ -14,10 +14,16 @@ Webpack loader that compiles some c/c++ files into a wasm using Emscripten.
 
 **⚠️ This is a forked package. For original `emcc-loader`, see [official package page on NPM](https://www.npmjs.com/package/emcc-loader).**
 
-`@nandenjin/emcc-loader` is hosted on GitHub Packages Registry. Add following to `.npmrc` to use it for all `@nandenjin/` packages. [Learn more](https://docs.github.com/en/free-pro-team@latest/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#installing-a-package)
+`@nandenjin/emcc-loader` is hosted on GitHub Packages Registry. Add following to `.npmrc`/`.yarnrc` to use it for all `@nandenjin/` packages. [Learn more](https://docs.github.com/en/free-pro-team@latest/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#installing-a-package)
 
-```
-registry=https://npm.pkg.github.com/nandenjin
+```shell
+# .npmrc
+registry=https://registry.npmjs.org
+@nandenjin:registry=https://npm.pkg.github.com/nandenjin
+
+# .yarnrc
+registry "https://registry.npmjs.org"
+"@nandenjin:registry" "https://npm.pkg.github.com"
 ```
 
 Then, install as usual.
