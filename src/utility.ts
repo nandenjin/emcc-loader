@@ -19,9 +19,14 @@ export const readFile = promisify(fs.readFile);
 export async function getDependencies(
 	compiler: string,
 	absPath: string,
-	flags: string[]
+	flags: string[],
+	cwd?: string
 ) {
-	const { stdout, err } = await execute(compiler, [...flags, '-MM', absPath]);
+	const { stdout, err } = await execute(
+		compiler,
+		[...flags, '-MM', cwd ? path.relative(cwd, absPath) : absPath],
+		{ cwd, shell: true }
+	);
 
 	if (err) throw err;
 

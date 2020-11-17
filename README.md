@@ -1,16 +1,41 @@
-# emcc-loader
+# 🛠 `@nandenjin/emcc-loader`
+
+![LICENSE](https://img.shields.io/github/license/nandenjin/emcc-loader?style=flat-square)
+![Version](https://img.shields.io/github/package-json/v/nandenjin/emcc-loader?style=flat-square)
+![CI Status](https://img.shields.io/github/workflow/status/nandenjin/emcc-loader/CI?style=flat-square)
+[![Dependencies](https://img.shields.io/david/nandenjin/emcc-loader?style=flat-square)](https://david-dm.org/nandenjin/emcc-loader)
+[![devDependencies](https://img.shields.io/david/dev/nandenjin/emcc-loader?style=flat-square)](https://david-dm.org/nandenjin/emcc-loader?type=dev)
+
 Webpack loader that compiles some c/c++ files into a wasm using Emscripten.
+
+🙋‍♂️ This is a fork of [`mezum/emcc-loader`](https://www.npmjs.com/package/emcc-loader), and is to implement and contribute for the original package with new features and fixes.
 
 ## Install
 
+**⚠️ This is a forked package. For original `emcc-loader`, see [official package page on NPM](https://www.npmjs.com/package/emcc-loader).**
+
+`@nandenjin/emcc-loader` is hosted on GitHub Packages Registry. Add following to `.npmrc`/`.yarnrc` to use it for all `@nandenjin/` packages. [Learn more](https://docs.github.com/en/free-pro-team@latest/packages/using-github-packages-with-your-projects-ecosystem/configuring-npm-for-use-with-github-packages#installing-a-package)
+
+```env
+# .npmrc
+registry=https://registry.npmjs.org
+@nandenjin:registry=https://npm.pkg.github.com/nandenjin
+
+# .yarnrc
+registry "https://registry.npmjs.org"
+"@nandenjin:registry" "https://npm.pkg.github.com"
 ```
-npm install --save-dev emcc-loader
+
+Then, install as usual.
+
+```
+npm install --save-dev @nandenjin/emcc-loader
 ```
 
 ## Usage
 First of all, create .clist file written relative paths from the clist to c/c++ file like this:
 
-```
+```env
 # comment
 foobar.c
 
@@ -28,7 +53,7 @@ $post.js
 
 Ofcourse, write c/c++ files!
 
-```
+```cpp
 #include <stdio.h>
 #include <emscripten/emscripten.h>
 
@@ -48,7 +73,7 @@ void sayHello() {
 
 Next, edit your webpack.config.js:
 
-```
+```js
 loaders: [
     {
         test: /\.clist$/,
@@ -73,7 +98,7 @@ loaders: [
 
 Now, you can import a wasm file like this:
 
-```
+```js
 import wasm from './module.clist';
 
 wasm.initialize().then(module => {
@@ -84,28 +109,30 @@ wasm.initialize().then(module => {
 ## Options
 emcc-loader is configuable on webpack.config.js.
 
-- buildDir : string
+- **`buildDir`** : `string`
 -- [Required] absolute path to temporary directory used by emcc.
-- cc : string
--- [default=emcc] c compiler path.
-- cxx : string
--- [default=em++] c++ compiler path.
-- ld : string
--- [default=emcc] linker path.
-- commonFlags : string[]
+- **`cwd`** : `string`
+-- [default=undefined] working directory for compilers. If specified, all paths passed to compilers will be relative against cwd.
+- **`cc`** : `string`
+-- [default=emcc] c compiler path or command.
+- **`cxx`** : `string`
+-- [default=em++] c++ compiler path or command.
+- **`ld`** : `string`
+-- [default=emcc] linker path or command.
+- **`commonFlags`** : `string[]`
 -- [default=[]] array of flags passed to all emcc/em++ commands.
-- cFlags : string[]
+- **`cFlags`** : `string[]`
 -- [default=[]] array of flags passed to emcc compiling C.
-- cxxFlags : string[]
+- **`cxxFlags`** : `string[]`
 -- [default=[]] array of flags passed to em++ compiling C++.
-- ldFlags : string[]
+- **`ldFlags`** : `string[]`
 -- [default=[]] array of flags passed to emcc linking all object files.
 
 ## Dependencies
-- Emscripten
+- [Emscripten](https://emscripten.org/)
 
 ## License
-MIT License
+[MIT License](/LICENSE)
 
 ## Inspiration
 Inspired by [cpp-wasm-loader](https://github.com/kobzol/cpp-wasm-loader).

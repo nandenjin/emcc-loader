@@ -114,7 +114,8 @@ export class Compiler {
 		const dependencies = await utility.getDependencies(
 			compiler,
 			srcPath,
-			flags
+			flags,
+			options.cwd
 		);
 		utility.addDependencies(context, dependencies);
 		const latestModifiedTime = await utility.getLatestModifiedTime(
@@ -127,13 +128,19 @@ export class Compiler {
 		}
 
 		await utility.mkdirs(path.dirname(outputPath), undefined);
-		const { stderr, err } = await utility.execute(compiler, [
-			...flags,
-			'-c',
-			'-o',
-			outputPath,
-			srcPath,
-		]);
+		const { stderr, err } = await utility.execute(
+			compiler,
+			[
+				...flags,
+				'-c',
+				'-o',
+				options.cwd
+					? path.relative(options.cwd, outputPath)
+					: outputPath,
+				options.cwd ? path.relative(options.cwd, srcPath) : srcPath,
+			],
+			{ cwd: options.cwd, shell: true }
+		);
 
 		if (err) throw err;
 
@@ -155,17 +162,30 @@ export class Compiler {
 			'-s',
 			'WASM=1',
 			'-o',
-			outputPath,
-			...objs,
+			options.cwd ? path.relative(options.cwd, outputPath) : outputPath,
+			...objs.map(o => (options.cwd ? path.relative(options.cwd, o) : o)),
 		];
 		if (options.preJs) {
-			flags.unshift('--pre-js', options.preJs);
+			flags.unshift(
+				'--pre-js',
+				options.cwd
+					? path.relative(options.cwd, options.preJs)
+					: options.preJs
+			);
 		}
 		if (options.postJs) {
-			flags.unshift('--post-js', options.postJs);
+			flags.unshift(
+				'--post-js',
+				options.cwd
+					? path.relative(options.cwd, options.postJs)
+					: options.postJs
+			);
 		}
 		await utility.mkdirs(path.dirname(outputPath), undefined);
-		const { stderr, err } = await utility.execute(options.ld, flags);
+		const { stderr, err } = await utility.execute(options.ld, flags, {
+			cwd: options.cwd,
+			shell: true,
+		});
 
 		if (err) throw err;
 
