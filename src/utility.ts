@@ -22,13 +22,14 @@ export async function getDependencies(
 	flags: string[],
 	cwd?: string
 ) {
-	const { stdout } = await execute(
+	const { stdout, err } = await execute(
 		compiler,
 		[...flags, '-MM', cwd ? path.relative(cwd, absPath) : absPath],
 		{ cwd, shell: true }
-	).catch(err => {
-		throw err.err;
-	});
+	);
+
+	if (err) throw err;
+
 	const dependencies = stdout
 		.toString()
 		.trim()

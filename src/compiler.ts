@@ -128,28 +128,22 @@ export class Compiler {
 		}
 
 		await utility.mkdirs(path.dirname(outputPath), undefined);
-		const { stderr } = await utility
-			.execute(
-				compiler,
-				[
-					...flags,
-					'-c',
-					'-o',
-					options.cwd
-						? path.relative(options.cwd, outputPath)
-						: outputPath,
-					options.cwd ? path.relative(options.cwd, srcPath) : srcPath,
-				],
-				{ cwd: options.cwd, shell: true }
-			)
-			.catch(err => {
-				if (err.err.code === 'ENOENT') {
-					throw new Error(
-						`Not found '${compiler}. Have you install it?'`
-					);
-				}
-				return { stderr: err.stderr as string | Buffer };
-			});
+		const { stderr, err } = await utility.execute(
+			compiler,
+			[
+				...flags,
+				'-c',
+				'-o',
+				options.cwd
+					? path.relative(options.cwd, outputPath)
+					: outputPath,
+				options.cwd ? path.relative(options.cwd, srcPath) : srcPath,
+			],
+			{ cwd: options.cwd, shell: true }
+		);
+
+		if (err) throw err;
+
 		return message.parseClangMessage(stderr.toString());
 	}
 
@@ -188,16 +182,13 @@ export class Compiler {
 			);
 		}
 		await utility.mkdirs(path.dirname(outputPath), undefined);
-		const { stderr } = await utility
-			.execute(options.ld, flags, { cwd: options.cwd, shell: true })
-			.catch(err => {
-				if (err.err.code === 'ENOENT') {
-					throw new Error(
-						`Not found '${options.ld}. Have you install it?'`
-					);
-				}
-				return { stderr: err.stderr as string | Buffer };
-			});
+		const { stderr, err } = await utility.execute(options.ld, flags, {
+			cwd: options.cwd,
+			shell: true,
+		});
+
+		if (err) throw err;
+
 		return message.parseClangMessage(stderr.toString());
 	}
 
