@@ -1,3 +1,12 @@
+## 0.1.1 (2020-11-17)
+
+
+### Bug Fixes
+
+* Handle errors from execute() by its returning values ([228bcf4](https://github.com/nandenjin/emcc-loader/commit/228bcf470f15e863ceff22fa128af95a5932c288))
+
+
+
 # 0.1.0 (2020-11-10)
 
 
