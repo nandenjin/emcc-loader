@@ -11,3 +11,4 @@ updates:
       interval: "daily"
     assignees:
       - nandenjin
+    open-pull-requests-limit: 25
